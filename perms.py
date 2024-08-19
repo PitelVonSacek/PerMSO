@@ -119,14 +119,14 @@ class GridGeomClass:
             for i, C_i in enumerate(self.blocks)
             for j, C_j in enumerate(self.blocks)
             if C_i.row < C_j.row
-        ])
+        ] or [ "true" ])
 
     def mona_description(self):
         l = len(self.blocks)
         def parts(templ, join=", "):
             return join.join( templ.format(i=i) for i in range(l) )
         def all_but(i):
-            return " & ".join( f"x notin X{j}" for j in range(l) if i != j )
+            return " & ".join([ f"x notin X{j}" for j in range(l) if i != j ] or [ "true" ])
         contained_once = " &\n  ".join( f"(x in X{i} => {all_but(i)})" for i in range(l) )
 
         As = parts("A{i}")

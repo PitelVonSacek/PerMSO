@@ -50,7 +50,8 @@ def automaton_to_generating_function(initial, step, final):
 
     num = (initial * M.adjugate() * final)[0, 0].rational_expand()
     den = M.det().rational_expand()
-    return (num / den).simplify_full()
+    # +1 because mona does not include empty permutation
+    return (num / den + 1).simplify_full()
     
 
 I, S, F = parse_automaton(sys.stdin)

@@ -24,6 +24,41 @@ sum_indecomposable: true
 first_values: [1,1,0,0,0,0,0]
 ---
 
+name: dec_sumind
+class: [[-1]]
+gen_fun: 1/(1-x)
+sum_indecomposable: true
+first_values: [1,1,1,1,1,1,1,1,1]
+---
+
+name: dec_skewind
+class: [[-1]]
+gen_fun: 1 + x
+skew_indecomposable: true
+first_values: [1,1,0,0,0,0,0]
+---
+
+name: inc_skewind
+class: [[1]]
+gen_fun: 1/(1-x)
+skew_indecomposable: true
+first_values: [1,1,1,1,1,1,1,1,1]
+---
+
+name: dec_alt
+class: [ [ 0, -1], [-1, 0] ]
+sum_indecomposable: true
+gen_fun: 1/(1-x)
+first_values: [1,1,1,1,1,1,1,1,1]
+---
+
+name: inc_alt
+class: [ [ 1, 0], [0, 1] ]
+skew_indecomposable: true
+gen_fun: 1/(1-x)
+first_values: [1,1,1,1,1,1,1,1,1]
+---
+
 name: L_0 (conj)
 class: [ [-1, -1], [-1, 0] ]
 gen_fun: |

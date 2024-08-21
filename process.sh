@@ -12,5 +12,5 @@ save() {
 save "$MONA" |
 mona -w /dev/stdin |
 save "$AUTOMATON" |
-./process-automaton.py "$MATRIX"
+./process_automaton.py "$MATRIX"
 

@@ -6,6 +6,11 @@
   #   {{row}}
 {% endfor -%}
 #
+# Gridded: {{ gridded }}
+# Avoid: {{ avoid | join(', ') }}
+# Sum indecomposable: {{ sum_indecomposable }}
+# Skew indecomposable: {{ skew_indecomposable }}
+#
 # Computed row signs: {{ C.row_signs | reverse | join(', ') }}
 # Computed col signs: {{ C.col_signs | join(', ') }}
 
@@ -26,7 +31,7 @@ var2 {{As}};
 pred partition({{var_Xs}}) = all1 x:
   ({% for i in range(C.n) -%} x in X{{i}} | {% endfor -%} false) &
   {% for i in range(C.n) -%}
-    (x in X{{i}} => {% for j in range(C.n) | reject("eq", i) -%}
+    (x in X{{i}} => {% for j in range(C.n) if j != i -%}
       x notin X{{j}} & {##}
     {%- endfor -%} true) &
   {% endfor -%}
@@ -116,17 +121,69 @@ pred minimal_gridding() = all2 {{Xs}}:
   Mon'({{Xs}}) & different({{Xs}})
   => bigger_than_A({{Xs}});
 
-pred trace_min() = all1 x: x > 0 =>
-  {% for i in range(C.n) -%}
-    (x - 1 in A{{i}} => (
-      {%- for j in range(i) -%}
-        {% if C.blocks[i].row != C.blocks[j].row and
-              C.blocks[i].col != C.blocks[j].col -%}
-          x notin A{{j}} & {##}
-        {%- endif %}
-      {%- endfor -%}
-    true)) &
+pred I(var1 x, var1 y) =
+  {% for i in range(C.n) -%}{%- for j in range(C.n) -%}
+    {% if C.blocks[i].row != C.blocks[j].row and
+          C.blocks[i].col != C.blocks[j].col -%}
+      (x in A{{i}} & y in A{{j}}) |
+  {##}
+    {%- endif %}
+  {%- endfor %}{% endfor -%}
+  false;
+
+pred cmp_lex(var1 x, var1 y) =
+  {% for i in range(1, C.n) -%}{%- for j in range(i) -%}
+    (x in A{{j}} & y in A{{i}}) |
+  {% endfor %}{% endfor -%}
+  false;
+
+pred trace_min() = all1 a, b:
+  a < b & (all1 x: x >= a & x < b => I(x, b)) =>
+  cmp_lex(a, b);
+
+{#- Match specified permutation #}
+{% macro match(pat) %}{% with N = pat | length -%}
+  (
+    # Match permutation {{pat}}
+    ex1 x{{ range(N) | join(", x") }}:
+    # x_i are left to right
+    {% for i in range(1, N) -%}
+      left_of(x{{i - 1}}, x{{i}}) & {##}
+    {%- endfor %}
+    # fix correct vertical order
+    {% for x in pat | sort %}{% if not loop.first -%}
+      below_of(x{{ pat.index(loop.previtem) }}, x{{ pat.index(x) }}) & {##}
+    {%- endif %}{% endfor %}
+    true
+  )
+{%- endwith %}{% endmacro %}
+
+pred avoid() =
+  {% for pat in avoid -%}
+    ~{{ match(pat) }} &
   {% endfor -%}
   true;
 
-partition({{As}}) & minimal_gridding() & trace_min();
+pred sum_decomposable() =
+  (ex1 x, y: x ~= y) &
+  ex1 x, y: all1 z: left_of(z, x) <=> below_of(z, y);
+
+pred skew_decomposable() =
+  (ex1 x, y: x ~= y) &
+  ex1 x, y: all1 z: left_of(z, x) <=> ~below_of(z, y);
+
+
+partition({{As}}) &
+trace_min() &
+avoid() &
+{% if not gridded -%}
+  minimal_gridding() &
+{% endif -%}
+{% if sum_indecomposable -%}
+  ~sum_decomposable() &
+{% endif -%}
+{% if skew_indecomposable -%}
+  ~skew_decomposable() &
+{% endif -%}
+true;
+

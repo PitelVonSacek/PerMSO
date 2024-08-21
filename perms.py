@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import ast
+import yaml
 import collections
 import jinja2
 import os
@@ -83,10 +83,21 @@ class GridGeomClass:
         return rs, cs
 
 
+def gen_mona(desc):
+    # TODO validate desc
+    C = GridGeomClass(desc["class"])
+
+    return jinja_env.get_template("perms.mona").render(
+        C=C,
+        gridded=desc.get("gridded", False),
+        avoid=desc.get("avoid", []),
+        sum_indecomposable=desc.get("sum_indecomposable", False),
+        skew_indecomposable=desc.get("skew_indecomposable", False),
+        version=VERSION
+    )
+
+
 if __name__ == "__main__":
-    C = GridGeomClass(ast.literal_eval(sys.stdin.read()))
-    print(jinja_env.get_template("perms.mona").render(
-      C=C,
-      version=VERSION
-    ))
+    desc = yaml.load(sys.stdin, Loader=yaml.SafeLoader)
+    print(gen_mona(desc))
 

@@ -54,17 +54,18 @@ def automaton_to_generating_function(initial, step, final):
     return (num / den + 1).simplify_full()
     
 
-I, S, F = parse_automaton(sys.stdin)
+if __name__ == "__main__":
+    I, S, F = parse_automaton(sys.stdin)
 
-if len(sys.argv) >= 2 and sys.argv[1]:
-    with open(sys.argv[1], "w") as f:
-        print(f"states = {len(I)}", file=f)
-        print(f"initial = {I}", file=f)
-        print(f"final = {F}", file=f)
-        print("step = [", file=f)
-        for r in S: print(f"  {r},", file=f)
-        print("]", file=f)
+    if len(sys.argv) >= 2 and sys.argv[1]:
+        with open(sys.argv[1], "w") as f:
+            print(f"states = {len(I)}", file=f)
+            print(f"initial = {I}", file=f)
+            print(f"final = {F}", file=f)
+            print("step = [", file=f)
+            for r in S: print(f"  {r},", file=f)
+            print("]", file=f)
 
-print(automaton_to_generating_function(I, S, F))
+    print(automaton_to_generating_function(I, S, F))
 
 

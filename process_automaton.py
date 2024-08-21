@@ -48,11 +48,9 @@ def automaton_to_generating_function(initial, step, final):
     step = matrix(QQ, step)
     M = matrix.identity(n) - x * step
 
-    num = (initial * M.adjugate() * final)[0, 0].rational_expand()
-    den = M.det().rational_expand()
     # +1 because mona does not include empty permutation
-    return (num / den + 1).simplify_full()
-    
+    return (initial * M.inverse() * final + 1)[0, 0].simplify_full()
+
 
 if __name__ == "__main__":
     I, S, F = parse_automaton(sys.stdin)

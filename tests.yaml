@@ -36,7 +36,7 @@ gen_fun: (x^2 - x + 1)/(x^2 - 2*x + 1)
 first_values: [1,1,2,3,4,5,6,7,8,9,10]
 ---
 
-name: two_layers_sumind
+name: two_layers_sumind (aka dec_alt)
 class: [ [0, -1], [-1, 0] ]
 gen_fun: 1/(1-x)
 sum_indecomposable: true
@@ -74,13 +74,6 @@ first_values: [1,1,1,1,1,1,1,1,1]
 name: dec_alt
 class: [ [ 0, -1], [-1, 0] ]
 sum_indecomposable: true
-gen_fun: 1/(1-x)
-first_values: [1,1,1,1,1,1,1,1,1]
----
-
-name: inc_alt
-class: [ [ 1, 0], [0, 1] ]
-skew_indecomposable: true
 gen_fun: 1/(1-x)
 first_values: [1,1,1,1,1,1,1,1,1]
 ---

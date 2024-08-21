@@ -59,6 +59,20 @@ gen_fun: 1/(1-x)
 first_values: [1,1,1,1,1,1,1,1,1]
 ---
 
+name: inc_inc_simple
+class: [[1,1]]
+simple: true
+gen_fun: (x^4 + x^3 - x^2 - x - 1)/(x^2 - 1)
+first_values: [1,1,2,0,1,0,1]
+---
+
+name: inc_dec_simple
+class: [[1,-1]]
+simple: true
+gen_fun: 2*x^2 + x + 1
+first_values: [1,1,2,0,0,0,0]
+---
+
 name: L_0 (conj)
 class: [ [-1, -1], [-1, 0] ]
 gen_fun: |

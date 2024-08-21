@@ -10,6 +10,7 @@
 # Avoid: {{ avoid | join(', ') }}
 # Sum indecomposable: {{ sum_indecomposable }}
 # Skew indecomposable: {{ skew_indecomposable }}
+# Simple: {{ simple }}
 #
 # Computed row signs: {{ C.row_signs | reverse | join(', ') }}
 # Computed col signs: {{ C.col_signs | join(', ') }}
@@ -174,6 +175,16 @@ pred skew_decomposable() =
   # y is bottom-most element of upper left part
   ex1 x, y: all1 z: left_of(z, x) <=> ~below_of(z, y);
 
+pred not_simple() = ex1 x0, x1, y0, y1:
+  left_of(x0, x1) & below_of(y0, y1) &
+  # not everything
+  (ex1 z: left_of(z, x0) | left_of(x1, z)) &
+  # horizontaly between xs <=> verticaly between ys
+  all1 z:
+    (left_of(z, x0) | left_of(x1, z))
+    <=>
+    (below_of(z, y0) | below_of(y1, z));
+
 
 partition({{As}}) &
 trace_min() &
@@ -186,6 +197,9 @@ avoid() &
 {% endif -%}
 {% if skew_indecomposable -%}
   ~skew_decomposable() &
+{% endif -%}
+{% if simple -%}
+  ~not_simple() &
 {% endif -%}
 true;
 

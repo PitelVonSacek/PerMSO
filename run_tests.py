@@ -55,4 +55,5 @@ if __name__ == "__main__":
 
         log("\n")
 
+    log("All tests succeded.\n")
 

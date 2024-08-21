@@ -37,7 +37,7 @@ if __name__ == "__main__":
         if "gen_fun" in t:
             log(" gen_fun ")
             ref = SR(t["gen_fun"])
-            if ref != res:
+            if (ref - res).simplify_full() != 0:
                 log(f"\nFailed: expected {ref} but got {res}\n")
                 exit(1)
             log("ok")

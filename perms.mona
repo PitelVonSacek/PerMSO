@@ -53,6 +53,8 @@ pred left_of(var1 x, var1 y) =
   {% endfor %}{% endfor -%}
   false;
 
+pred lefteq_of(var1 x, var1 y) = left_of(x,y) | x = y;
+
 pred below_of(var1 x, var1 y) =
   {% for i in range(C.n) %}{% for j in range(C.n) -%}
     (x in A{{i}} & y in A{{j}} & {##}
@@ -68,6 +70,8 @@ pred below_of(var1 x, var1 y) =
     ) |
   {% endfor %}{% endfor -%}
   false;
+
+pred beloweq_of(var1 x, var1 y) = below_of(x,y) | x = y;
 
 pred Mon'({{var_Xs}}) =
   partition({{Xs}}) &
@@ -165,12 +169,12 @@ pred avoid() =
   true;
 
 pred sum_decomposable() =
-  (ex1 x, y: x ~= y) &
-  ex1 x, y: all1 z: left_of(z, x) <=> below_of(z, y);
+ ex1 x, y: left_of(x,y) & ~(ex1 z: left_of(x, z) & left_of(z, y)) &
+	all1 z1,z2: (lefteq_of(z1, x) & lefteq_of(y, z2)) => below_of(z1, z2);
 
 pred skew_decomposable() =
-  (ex1 x, y: x ~= y) &
-  ex1 x, y: all1 z: left_of(z, x) <=> ~below_of(z, y);
+ ex1 x, y: left_of(x,y) & ~(ex1 z: left_of(x, z) & left_of(z, y)) &
+	all1 z1,z2: (lefteq_of(z1, x) & lefteq_of(y, z2)) => below_of(z2, z1);
 
 
 partition({{As}}) &

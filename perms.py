@@ -94,6 +94,7 @@ def gen_mona(desc):
         sum_indecomposable=desc.get("sum_indecomposable", False),
         skew_indecomposable=desc.get("skew_indecomposable", False),
         simple=desc.get("simple", False),
+        extra=desc.get("extra", "true"),
         version=VERSION
     )
 

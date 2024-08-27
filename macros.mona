@@ -1,0 +1,24 @@
+{% macro parts(str, n) -%}
+  {% for i in range(n) -%}
+    {{str}}{{i}}
+    {%- if not loop.last %}, {% endif -%}
+  {% endfor -%}
+{% endmacro %}
+
+{# Match specified permutation #}
+{% macro match(pat) %}{% with N = pat | length -%}
+  (
+    # Match permutation {{pat}}
+    ex1 x{{ range(N) | join(", x") }}:
+    # x_i are left to right
+    {% for i in range(1, N) -%}
+      left_of(x{{i - 1}}, x{{i}}) & {##}
+    {%- endfor %}
+    # fix correct vertical order
+    {% for x in pat | sort %}{% if not loop.first -%}
+      below_of(x{{ pat.index(loop.previtem) }}, x{{ pat.index(x) }}) & {##}
+    {%- endif %}{% endfor %}
+    true
+  )
+{%- endwith %}{% endmacro %}
+

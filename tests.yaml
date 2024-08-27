@@ -1,6 +1,6 @@
 name: single_point
 class: [[1]]
-extra: |-
+class_extra: |-
   ~(ex1 x, y: x in X0 & y in X0 & x ~= y)
 gen_fun: 1 + x
 first_values: [1,1,0,0,0,0,0,0]
@@ -8,7 +8,7 @@ first_values: [1,1,0,0,0,0,0,0]
 
 name: inc_plus_single
 class: [[1,1]]
-extra: |-
+class_extra: |-
   ~(ex1 x, y: x in X0 & y in X0 & x ~= y)
 gen_fun: (x^2 - x + 1)/(x^2 - 2*x + 1)
 first_values: [1,1,2,3,4,5,6,7,8,9,10]

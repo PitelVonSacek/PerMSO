@@ -84,10 +84,17 @@ class GridGeomClass:
 
 
 def gen_mona(desc):
-    # TODO validate desc
-    C = GridGeomClass(desc["class"])
+    TYPES = {
+      "geom_grid": (GridGeomClass, "gridded"),
+    }
 
-    return jinja_env.get_template("perms.mona").render(
+    if "type" not in desc: desc["type"] = "geom_grid"
+    constructor, templ = TYPES[desc["type"]]
+    # TODO validate desc
+    C = constructor(desc["class"])
+
+    return jinja_env.get_template(f"{templ}.mona").render(
+        type=desc["type"],
         C=C,
         gridded=desc.get("gridded", False),
         avoid=desc.get("avoid", []),
@@ -95,6 +102,7 @@ def gen_mona(desc):
         skew_indecomposable=desc.get("skew_indecomposable", False),
         simple=desc.get("simple", False),
         extra=desc.get("extra", "true"),
+        class_extra=desc.get("class_extra", "true"),
         version=VERSION
     )
 

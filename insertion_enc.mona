@@ -1,0 +1,127 @@
+{% extends "perms.mona" %}
+{% from "macros.mona" import parts %}
+
+{% set As = parts("A", C) %}
+{% set Xs = parts("X", C) %}
+{% set var_Xs = parts("var2 X", C) %}
+{% set Ss = parts("S", C + 1) %}
+{% set var_Ss = parts("var2 S", C + 1) %}
+
+{% block info -%}
+# Max slots: {{ C }}
+{%- endblock info %}
+
+
+{% block hide_internals -%}
+  # prevent direct usage of As
+  let1 ASL = 0, ASR = 0 in
+  {% for i in range(C) -%} let1 A{{i}} = 0 in {% endfor %}
+{%- endblock %}
+
+
+{% block orderings %}
+var2 {{As}}, ASL, ASR;
+
+
+pred partition({{var_Ss}}) = all1 x:
+  ({% for i in range(C + 1) -%} x in S{{i}} | {% endfor -%} false) &
+  {% for i in range(C + 1) -%}
+    (x in S{{i}} => {% for j in range(C + 1) if j != i -%}
+      x notin S{{j}} & {##}
+    {%- endfor -%} true) &
+  {% endfor -%}
+  true;
+
+pred partition_of(var1 l, var1 u, {{var_Ss}}) = all1 x: x >= l & x < u =>
+  ({% for i in range(C + 1) -%} x in S{{i}} | {% endfor -%} false) &
+  {% for i in range(C + 1) -%}
+    (x in S{{i}} => {% for j in range(C + 1) if j != i -%}
+      x notin S{{j}} & {##}
+    {%- endfor -%} true) &
+  {% endfor -%}
+  true;
+
+
+pred left_of_int(var1 x, var1 y) =
+  x < y &
+  ex2 {{Ss}}:
+  partition_of(x, y, {{Ss}}) &
+  (
+    {% for i in range(C) %}
+    (x in A{{i}} & x in ASL & x in S{{i+1}}) |
+    (x in A{{i}} & x notin ASL & x in S{{i}}) |
+    {% endfor %}
+    false
+  ) &
+  (all1 z: z > x & z < y => (
+    let2 S{{C+1}} = empty in
+    {%- for i in range(1, C + 1) %}{% for j in range(C) %}
+    (z - 1 in S{{i}} & z in A{{j}} & (
+      {% if j < i -%}
+        (z in ASL & z in ASR & z in S{{i+1}}) |
+        (z notin ASL & z in ASR & z in S{{i}}) |
+        (z in ASL & z notin ASR & z in S{{i}}) |
+        (z notin ASL & z notin ASR & z in S{{i - 1}})
+      {% else -%}
+        z in S{{i}}
+      {% endif %}
+    )) |
+    {% endfor %}{% endfor %}
+    false
+  )) &
+  (
+    {% for i in range(C + 1) %}{% for j in range(C) if j < i %}
+    (y - 1 in S{{i}} & y in A{{j}}) |
+    {% endfor %}{% endfor %}
+    false
+  );
+
+
+pred left_of(var1 x, var1 y) =
+  (x < y & left_of_int(x, y)) |
+  (x > y & ~left_of_int(y, x));
+
+pred below_of(var1 x, var1 y) = x < y;
+
+
+# class specific extra conditions
+pred class_extra({{var_Xs}}) =
+  {{ self.hide_internals() }}
+  {{ class_extra | indent(2) }};
+
+
+{% macro target(var, i) -%}
+  {% if 0 <= i and i <= C -%}
+    {{var}} in S{{i}}
+  {%- else -%}
+    false
+  {%- endif %}
+{%- endmacro %}
+pred is_valid() =
+  ex2 {{Ss}}:
+  partition({{Ss}}) &
+  S0 ~= empty &
+  (
+    (0 in ASR & 0 in ASL & {{ target(0, 2) }}) |
+    (0 notin ASR & 0 in ASL & 0 in S1) |
+    (0 in ASR & 0 notin ASL & 0 in S1) |
+    (0 notin ASR & 0 notin ASL & 0 in S0)
+  ) &
+  (all1 x:
+    {%- for i in range(1, C + 1) %}
+    (x - 1 in S{{i}} & x in ASR & x in ASL & {{ target("x", i + 1) }}) |
+    (x - 1 in S{{i}} & x notin ASR & x in ASL & {{ target("x", i) }}) |
+    (x - 1 in S{{i}} & x in ASR & x notin ASL & {{ target("x", i) }}) |
+    (x - 1 in S{{i}} & x notin ASR & x notin ASL & {{ target("x", i - 1) }}) |
+    {% endfor %}
+    x = 0
+  );
+{% endblock orderings %}
+
+
+{% block is_valid %}
+partition({{As}}, {}) &
+is_valid() &
+class_extra({{As}}) &
+{% endblock %}
+

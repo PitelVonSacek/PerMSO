@@ -86,6 +86,7 @@ class GridGeomClass:
 def gen_mona(desc):
     TYPES = {
       "geom_grid": (GridGeomClass, "gridded"),
+      "insertion_enc": (lambda x: x, "insertion_enc"),
     }
 
     if "type" not in desc: desc["type"] = "geom_grid"

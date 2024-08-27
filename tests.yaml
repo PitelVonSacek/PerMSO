@@ -108,6 +108,21 @@ gen_fun: 2*x^2 + x + 1
 first_values: [1,1,2,0,0,0,0]
 ---
 
+name: inc_enc_1
+type: insertion_enc
+class: 1
+gen_fun: (x - 1)/(2*x - 1)
+first_values: [1,1,2,4,8,16,32,64,128]
+---
+
+name: inc_enc_1_simple
+type: insertion_enc
+class: 1
+simple: true
+gen_fun: 2x^2 + x + 1
+first_values: [1,1,2,0,0,0,0,0,0,0]
+---
+
 name: L_0 (conj)
 class: [ [-1, -1], [-1, 0] ]
 gen_fun: |

@@ -85,27 +85,41 @@ class GridGeomClass:
 
 def gen_mona(desc):
     TYPES = {
-      "geom_grid": (GridGeomClass, "gridded"),
-      "insertion_enc": (lambda x: x, "insertion_enc"),
+        "geom_grid": (GridGeomClass, "gridded"),
+        "insertion_enc": (lambda x: x, "insertion_enc"),
     }
 
-    if "type" not in desc: desc["type"] = "geom_grid"
-    constructor, templ = TYPES[desc["type"]]
-    # TODO validate desc
-    C = constructor(desc["class"])
+    KNOWN_KEYS = {
+        "type": "geom_grid",
+        "class": None,
+        "gridded": False,
+        "avoid": [],
+        "sum_indecomposable": False,
+        "skew_indecomposable": False,
+        "simple": False,
+        "extra": "true",
+        "class_extra": "true",
+    }
 
-    return jinja_env.get_template(f"{templ}.mona").render(
-        type=desc["type"],
-        C=C,
-        gridded=desc.get("gridded", False),
-        avoid=desc.get("avoid", []),
-        sum_indecomposable=desc.get("sum_indecomposable", False),
-        skew_indecomposable=desc.get("skew_indecomposable", False),
-        simple=desc.get("simple", False),
-        extra=desc.get("extra", "true"),
-        class_extra=desc.get("class_extra", "true"),
-        version=VERSION
-    )
+    IGNORED_KEYS = { "name", "gen_fun", "first_values" }
+
+    desc = dict(desc)
+
+    for k in desc.keys():
+        if k not in KNOWN_KEYS and k not in IGNORED_KEYS:
+            print(f"WARNING: unknown key '{k}'", file=sys.stderr)
+
+    for k, v in KNOWN_KEYS.items():
+        if k not in desc:
+            desc[k] = v
+
+    constructor, templ = TYPES[desc["type"]]
+    desc |= {
+        "C": constructor(desc["class"]),
+        "version": VERSION
+    }
+
+    return jinja_env.get_template(f"{templ}.mona").render(**desc)
 
 
 if __name__ == "__main__":

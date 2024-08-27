@@ -85,7 +85,7 @@ pred below_of(var1 x, var1 y) = x < y;
 
 
 # class specific extra conditions
-pred class_extra({{var_Xs}}) =
+pred class_extra({{var_Xs}}, var2 XSL, var2 XSR) =
   {{ self.hide_internals() }}
   {{ class_extra | indent(2) }};
 
@@ -115,6 +115,17 @@ pred is_valid() =
     (x - 1 in S{{i}} & x notin ASR & x notin ASL & {{ target("x", i - 1) }}) |
     {% endfor %}
     x = 0
+  ) &
+  0 in A0 &
+  (all1 x:
+    {% for i in range(1, C + 1) -%}
+    (x - 1 in S{{i}} & (
+      {%- for j in range(i) -%}
+        x in A{{j}} | {##}
+      {%- endfor -%}
+      false)) |
+    {% endfor -%}
+    x = 0
   );
 {% endblock orderings %}
 
@@ -122,6 +133,6 @@ pred is_valid() =
 {% block is_valid %}
 partition({{As}}, {}) &
 is_valid() &
-class_extra({{As}}) &
+class_extra({{As}}, ASL, ASR) &
 {% endblock %}
 

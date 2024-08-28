@@ -42,9 +42,7 @@ pred partition_of(var1 l, var1 u, {{var_Ss}}) = all1 x: x >= l & x < u =>
   true;
 
 
-pred left_of_int(var1 x, var1 y) =
-  x < y &
-  ex2 {{Ss}}:
+pred count_left_slots(var1 x, var1 y, {{var_Ss}}) =
   partition_of(x, y, {{Ss}}) &
   (
     {% for i in range(C) %}
@@ -55,7 +53,7 @@ pred left_of_int(var1 x, var1 y) =
   ) &
   (all1 z: z > x & z < y => (
     let2 S{{C+1}} = empty in
-    {%- for i in range(1, C + 1) %}{% for j in range(C) %}
+    {%- for i in range(C + 1) %}{% for j in range(C) %}
     (z - 1 in S{{i}} & z in A{{j}} & (
       {% if j < i -%}
         (z in ASL & z in ASR & z in S{{i+1}}) |
@@ -68,18 +66,29 @@ pred left_of_int(var1 x, var1 y) =
     )) |
     {% endfor %}{% endfor %}
     false
-  )) &
+  ));
+
+{% macro left_of_impl(dir) -%}
+pred _left_of_impl_{{dir}}(var1 x, var1 y) =
+  x < y &
+  ex2 {{Ss}}:
+  count_left_slots(x, y, {{Ss}}) &
   (
-    {% for i in range(C + 1) %}{% for j in range(C) if j < i %}
+    {% for i in range(C + 1) %}{% for j in range(C) if
+      (dir == "right" and j < i) or
+      (dir == "left" and j >= i) %}
     (y - 1 in S{{i}} & y in A{{j}}) |
     {% endfor %}{% endfor %}
     false
   );
+{% endmacro -%}
 
+{{ left_of_impl("left") }}
+{{ left_of_impl("right") }}
 
 pred left_of(var1 x, var1 y) =
-  (x < y & left_of_int(x, y)) |
-  (x > y & ~left_of_int(y, x));
+  (x < y & _left_of_impl_left(x, y)) |
+  (x > y & _left_of_impl_right(y, x));
 
 pred below_of(var1 x, var1 y) = x < y;
 

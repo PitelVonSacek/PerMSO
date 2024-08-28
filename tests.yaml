@@ -2,150 +2,174 @@ name: single_point
 class: [[1]]
 class_extra: |-
   ~(ex1 x, y: x in X0 & y in X0 & x ~= y)
-gen_fun: 1 + x
-first_values: [1,1,0,0,0,0,0,0]
+gen_fun: x
+first_values: [0,1,0,0,0,0,0,0]
 ---
 
 name: inc_plus_single
 class: [[1,1]]
 class_extra: |-
   ~(ex1 x, y: x in X0 & y in X0 & x ~= y)
-gen_fun: (x^2 - x + 1)/(x^2 - 2*x + 1)
-first_values: [1,1,2,3,4,5,6,7,8,9,10]
+gen_fun: x/(x^2 - 2*x + 1)
+first_values: [0,1,2,3,4,5,6,7,8,9,10]
 ---
 
 name: inc
 class: [[1]]
-gen_fun: 1/(1-x)
-first_values: [1,1,1,1,1,1,1,1,1,1,1]
+gen_fun: x/(1-x)
+first_values: [0,1,1,1,1,1,1,1,1,1,1]
 ---
 
 name: inc_from_2by2
 class: [ [0, 1], [1, 0]]
-gen_fun: 1/(1-x)
-first_values: [1,1,1,1,1,1,1,1,1,1,1]
+gen_fun: x/(1-x)
+first_values: [0,1,1,1,1,1,1,1,1,1,1]
 ---
 
 name: inc_from_pat
 class: [ [0, -1], [1, 0]]
 avoid: [[2,1]]
-gen_fun: 1/(1-x)
-first_values: [1,1,1,1,1,1,1,1,1,1,1]
+gen_fun: x/(1-x)
+first_values: [0,1,1,1,1,1,1,1,1,1,1]
 ---
 
 name: dec
 class: [[-1]]
-gen_fun: 1/(1-x)
-first_values: [1,1,1,1,1,1,1,1,1,1,1]
+gen_fun: x/(1-x)
+first_values: [0,1,1,1,1,1,1,1,1,1,1]
 ---
 
 name: inc_max_6
 class: [[1]]
 avoid: [[1,2,3,4,5,6,7]]
-gen_fun: 1 + x + x^2 + x^3 + x^4 + x^5 + x^6
-first_values: [1,1,1,1,1,1,1,0,0,0,0,0]
+gen_fun: x + x^2 + x^3 + x^4 + x^5 + x^6
+first_values: [0,1,1,1,1,1,1,0,0,0,0,0]
 ---
 
 name: two_layers
 class: [ [0, -1], [-1, 0] ]
-gen_fun: (x^2 - x + 1)/(x^2 - 2*x + 1)
-first_values: [1,1,2,3,4,5,6,7,8,9,10]
+gen_fun: x/(x^2 - 2*x + 1)
+first_values: [0,1,2,3,4,5,6,7,8,9,10]
 ---
 
 name: two_layers_sumind (aka dec_alt)
 class: [ [0, -1], [-1, 0] ]
-gen_fun: 1/(1-x)
+gen_fun: x/(1-x)
 sum_indecomposable: true
-first_values: [1,1,1,1,1,1,1,1,1,1,1]
+first_values: [0,1,1,1,1,1,1,1,1,1,1]
 ---
 
 name: inc_sumind
 class: [[1]]
-gen_fun: 1 + x
+gen_fun: x
 sum_indecomposable: true
-first_values: [1,1,0,0,0,0,0]
+first_values: [0,1,0,0,0,0,0]
 ---
 
 name: dec_sumind
 class: [[-1]]
-gen_fun: 1/(1-x)
+gen_fun: x/(1-x)
 sum_indecomposable: true
-first_values: [1,1,1,1,1,1,1,1,1]
+first_values: [0,1,1,1,1,1,1,1,1]
 ---
 
 name: dec_skewind
 class: [[-1]]
-gen_fun: 1 + x
+gen_fun: x
 skew_indecomposable: true
-first_values: [1,1,0,0,0,0,0]
+first_values: [0,1,0,0,0,0,0]
 ---
 
 name: inc_skewind
 class: [[1]]
-gen_fun: 1/(1-x)
+gen_fun: x/(1-x)
 skew_indecomposable: true
-first_values: [1,1,1,1,1,1,1,1,1]
+first_values: [0,1,1,1,1,1,1,1,1]
 ---
 
 name: dec_alt
 class: [ [ 0, -1], [-1, 0] ]
 sum_indecomposable: true
-gen_fun: 1/(1-x)
-first_values: [1,1,1,1,1,1,1,1,1]
+gen_fun: x/(1-x)
+first_values: [0,1,1,1,1,1,1,1,1]
 ---
 
 name: inc_inc_simple
 class: [[1,1]]
 simple: true
-gen_fun: (x^4 + x^3 - x^2 - x - 1)/(x^2 - 1)
-first_values: [1,1,2,0,1,0,1]
+gen_fun: (x^4 + x^3 - 2*x^2 - x)/(x^2 - 1)
+first_values: [0,1,2,0,1,0,1]
 ---
 
 name: inc_dec_simple
 class: [[1,-1]]
 simple: true
-gen_fun: 2*x^2 + x + 1
-first_values: [1,1,2,0,0,0,0]
+gen_fun: 2*x^2 + x
+first_values: [0,1,2,0,0,0,0]
 ---
 
 name: inc_enc_1
 type: insertion_enc
 class: 1
-gen_fun: (x - 1)/(2*x - 1)
-first_values: [1,1,2,4,8,16,32,64,128]
+gen_fun: -x/(2*x - 1)
+first_values: [0,1,2,4,8,16,32,64,128]
 ---
 
 name: inc_enc_1_simple
 type: insertion_enc
 class: 1
 simple: true
-gen_fun: 2x^2 + x + 1
-first_values: [1,1,2,0,0,0,0,0,0,0]
+gen_fun: 2x^2 + x
+first_values: [0,1,2,0,0,0,0,0,0,0]
 ---
 
 name: layered
 type: insertion_enc
 class: 2
 avoid: [ [2,3,1], [3,1,2] ]
-gen_fun: (x - 1)/(2*x - 1)
-first_values: [1,1,2,4,8,16,32,64,128]
+gen_fun: -x/(2*x - 1)
+first_values: [0,1,2,4,8,16,32,64,128]
 ---
 
 name: layered (3 slot)
 type: insertion_enc
 class: 3
 avoid: [ [2,3,1], [3,1,2] ]
-gen_fun: (x - 1)/(2*x - 1)
-first_values: [1,1,2,4,8,16,32,64,128]
+gen_fun: -x/(2*x - 1)
+first_values: [0,1,2,4,8,16,32,64,128]
+---
+
+name: av123_231
+type: insertion_enc
+class: 2
+avoid: [ [1,2,3], [2,3,1] ]
+gen_fun: -x*(1 - x + x^2)/(x-1)^3
+first_values: [0, 1, 2, 4, 7, 11, 16, 22, 29, 37, 46, 56, 67, 79, 92, 106, 121, 137]
+---
+
+name: av123_321
+type: insertion_enc
+class: 2
+avoid: [ [1,2,3], [3,2,1] ]
+gen_fun: x + 2x^2 + 4x^3 + 4x^4
+first_values: [0, 1, 2, 4, 4, 0, 0, 0, 0, 0]
+---
+
+name: av123_132_213
+type: insertion_enc
+class: 2
+avoid: [ [1,2,3], [1,3,2],[2,1,3]]
+gen_fun: x*(1 + x)/(1 - x - x^2)
+first_values: [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610]
 ---
 
 name: L_0 (conj)
 class: [ [-1, -1], [-1, 0] ]
 gen_fun: |
   (1 - 8x + 26x^2 - 43x^3 + 40x^4 - 21x^5 + 4x^6) /
-  ((1 - x)^4 * (1 - 2x) * (1 - 3x + x^2))
+  ((1 - x)^4 * (1 - 2x) * (1 - 3x + x^2))-1
 first_values: [
-  1, 1, 2, 6, 21, 72, 231, 698, 2018, 5659, 15545, 42109,
+  0, 1, 2, 6, 21, 72, 231, 698, 2018, 5659, 15545, 42109,
   112983, 301143, 798910, 2112320, 5571257
 ]
 ---
@@ -154,9 +178,9 @@ name: L_1 (conj)
 class: [ [-1, -1], [1, 0] ]
 gen_fun: |
   (1 - 5x + 8x^2 - 3x^3) /
-  ((1 - x) * (1 - 2x) * (1 - 3x + x^2))
+  ((1 - x) * (1 - 2x) * (1 - 3x + x^2))-1
 first_values: [
-  1, 1, 2, 6, 19, 58, 170, 483, 1342, 3670, 9923, 26610,
+  0, 1, 2, 6, 19, 58, 170, 483, 1342, 3670, 9923, 26610,
   70930, 188227, 497846, 1313502, 3459043
 ]
 ---
@@ -165,9 +189,9 @@ name: L_5 (conj)
 class: [ [1, -1], [1, 0] ]
 gen_fun: |
   (1 - 5x + 8x^2 - 3x^3) /
-  ((1 - x) * (1 - 2x) * (1 - 3x + x^2))
+  ((1 - x) * (1 - 2x) * (1 - 3x + x^2)) - 1
 first_values: [
-  1, 1, 2, 6, 19, 58, 170, 483, 1342, 3670, 9923, 26610,
+  0, 1, 2, 6, 19, 58, 170, 483, 1342, 3670, 9923, 26610,
   70930, 188227, 497846, 1313502, 3459043
 ]
 ---
@@ -177,9 +201,9 @@ class: [
   [-1, 1],
   [ 1, 0]
 ]
-gen_fun: (1 - 2x)/(1 - 3x + x^2)
+gen_fun: (1 - 2x)/(1 - 3x + x^2) - 1
 first_values: [
-  1, 1, 2, 5, 13, 34, 89, 233, 610, 1597, 4181, 10946, 28657,
+  0, 1, 2, 5, 13, 34, 89, 233, 610, 1597, 4181, 10946, 28657,
   75025, 196418, 514229, 1346269, 3524578, 9227465, 24157817
 ]
 ---
@@ -188,9 +212,9 @@ name: L_4 (conj)
 class: [ [1, -1], [-1, 0] ]
 gen_fun: |
   (1 - 4x + 5x^2 - x^3) /
-  ((1 - x)^2 * (1 - 3x + x^2))
+  ((1 - x)^2 * (1 - 3x + x^2)) - 1
 first_values: [
-  1, 1, 2, 6, 18, 51, 139, 371, 980, 2576, 6756, 17701, 46357,
+  0, 1, 2, 6, 18, 51, 139, 371, 980, 2576, 6756, 17701, 46357,
   121381, 317798, 832026, 2178294
 ]
 ---
@@ -199,9 +223,9 @@ name: L_7 (conj)
 class: [ [1, 1], [1, 0] ]
 gen_fun: |
   (1 - 7x + 19x^2 - 25x^3 + 17x^4 - 4x^5) /
-  ((1 - x)^3 * (1 - 2x) * (1 - 3x + x^2))
+  ((1 - x)^3 * (1 - 2x) * (1 - 3x + x^2)) - 1
 first_values: [
-  1, 1, 2, 5, 14, 42, 128, 384, 1123, 3204, 8955, 24629, 66913,
+  0, 1, 2, 5, 14, 42, 128, 384, 1123, 3204, 8955, 24629, 66913,
   180127, 481568, 1280855, 3393644
 ]
 

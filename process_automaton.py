@@ -49,7 +49,7 @@ def automaton_to_generating_function(initial, step, final):
     M = matrix.identity(n) - x * step
 
     # +1 because mona does not include empty permutation
-    return (initial * M.inverse() * final + 1)[0, 0].simplify_full()
+    return (initial * M.inverse() * final)[0, 0].simplify_full()
 
 
 if __name__ == "__main__":

@@ -15,6 +15,11 @@
   #   {{row}}
 {% endfor -%}
 #
+# Block indices:
+{% for row in C.indices | reverse -%}
+  #   {{ row | replace("None", "_") }}
+{% endfor -%}
+#
 # Gridded: {{ gridded }}
 # Computed row signs: {{ C.row_signs | reverse | join(', ') }}
 # Computed col signs: {{ C.col_signs | join(', ') }}

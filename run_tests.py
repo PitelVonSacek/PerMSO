@@ -36,9 +36,9 @@ if __name__ == "__main__":
         log(f"{t['name']}:")
         mona = gen_mona(t)
         if t.get("skip", False):
-          log(f"Skipping ({t['skip']})\n")
-          skipped += 1
-          continue
+            log(f" Skipping ({t['skip']})\n")
+            skipped += 1
+            continue
 
         try:
             automaton = run_mona(mona)

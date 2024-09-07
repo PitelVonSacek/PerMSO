@@ -101,7 +101,7 @@ def gen_mona(desc):
         "class_extra": "true",
     }
 
-    IGNORED_KEYS = { "name", "gen_fun", "first_values" }
+    IGNORED_KEYS = { "name", "gen_fun", "first_values", "skip" }
 
     desc = dict(desc)
 

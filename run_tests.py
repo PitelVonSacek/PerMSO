@@ -37,6 +37,7 @@ if __name__ == "__main__":
         if t.get("skip", False):
           log(f"Skipping ({t['skip']})\n")
           skipped += 1
+          continue
 
         res = a2gf(*parse_automaton(StringIO(run_mona(mona))))
 

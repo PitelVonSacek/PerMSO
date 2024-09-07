@@ -31,6 +31,7 @@ if __name__ == "__main__":
         tests = list(yaml.load_all(f, Loader=yaml.SafeLoader))
 
     skipped = 0
+    mona_failed = 0
     for t in tests:
         log(f"{t['name']}:")
         mona = gen_mona(t)
@@ -39,7 +40,14 @@ if __name__ == "__main__":
           skipped += 1
           continue
 
-        res = a2gf(*parse_automaton(StringIO(run_mona(mona))))
+        try:
+            automaton = run_mona(mona)
+        except subprocess.CalledProcessError as e:
+            mona_failed += 1
+            log(f" Mona failed: {e}\n")
+            continue
+
+        res = a2gf(*parse_automaton(StringIO(automaton)))
 
         if "gen_fun" in t:
             log(" gen_fun ")
@@ -62,6 +70,9 @@ if __name__ == "__main__":
 
         log("\n")
 
-    skipped = f" ({skipped} skipped)" if skipped else ""
-    log(f"All tests succeded{skipped}.\n")
+    if mona_failed:
+        log(f"Mona failed {mona_failed} times.\n")
+    else:
+        skipped = f" ({skipped} skipped)" if skipped else ""
+        log(f"All tests succeded{skipped}.\n")
 

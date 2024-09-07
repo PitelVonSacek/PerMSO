@@ -30,9 +30,15 @@ if __name__ == "__main__":
     with open(test_file, "r") as f:
         tests = list(yaml.load_all(f, Loader=yaml.SafeLoader))
 
+    skipped = 0
     for t in tests:
         log(f"{t['name']}:")
-        res = a2gf(*parse_automaton(StringIO(run_mona(gen_mona(t)))))
+        mona = gen_mona(t)
+        if t.get("skip", False):
+          log(f"Skipping ({t['skip']})\n")
+          skipped += 1
+
+        res = a2gf(*parse_automaton(StringIO(run_mona(mona))))
 
         if "gen_fun" in t:
             log(" gen_fun ")
@@ -55,5 +61,6 @@ if __name__ == "__main__":
 
         log("\n")
 
-    log("All tests succeded.\n")
+    skipped = f" ({skipped} skipped)" if skipped else ""
+    log(f"All tests succeded{skipped}.\n")
 

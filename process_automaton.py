@@ -40,16 +40,46 @@ def parse_automaton(inp):
 
 
 def automaton_to_generating_function(initial, step, final):
-    n = len(initial)
-    x = SR.var("x", QQ)
+    """Calculate generating function by solving system of linear equations.
 
+    The generating function is rational with exponents up to n.
+    First n + 1 variables are coeffitients of numerator, the next n + 1
+    of denominator. Both are ordered from x^0 to x^n.
+    """
+    n = len(initial)
     initial = matrix(QQ, [ initial ])
     final = matrix(QQ, [ final ]).transpose()
     step = matrix(QQ, step)
-    M = matrix.identity(n) - x * step
 
-    # +1 because mona does not include empty permutation
-    return (initial * M.inverse() * final)[0, 0].simplify_full()
+    tmp = initial
+    values = []
+    for _ in range(2*n + 2):
+      values.append((tmp*final)[0, 0])
+      tmp *= step
+
+    num = matrix(QQ, n + 1, 2*n + 2, lambda r, c: r == c)
+    den = matrix(QQ, n + 1, 2*n + 2, lambda r, c: r + n + 1 == c)
+
+    A = matrix(QQ, 2*n + 2, 2*n + 2)
+    b = vector(QQ, 2*n + 2)
+    for i in range(2*n + 1):
+      A[i,:] = num[0,:]
+      b[i] = values[i]
+
+      num -= values[i] * den
+      num[:-1,:] = num[1:,:]
+      num[-1,:] = 0
+
+    A[-1,n+1] = 1
+    b[-1] = 1
+
+    sol = A.solve_right(b)
+
+    x = SR.var("x", QQ)
+    return (
+        sum( sol[i] * x**i for i in range(n + 1) ) /
+        sum( sol[i+n+1] * x**i for i in range(n + 1) )
+    )
 
 
 if __name__ == "__main__":

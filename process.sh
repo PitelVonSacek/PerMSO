@@ -2,9 +2,7 @@
 
 save() {
   if [[ -n "$1" ]]; then
-    tee "$1"
-  else
-    cat
+    cat > "$1"
   fi
 }
 
@@ -25,12 +23,29 @@ else
   inp="$(cat)"
 fi
 
+mona_desc="$(
+  ./perms.py <<<"$inp"
+)"
+
+save "$MONA" <<<"$mona_desc"
+
+[[ -n "$MONA_STATS" ]] && MONA_FLAGS=-s || MONA_FLAGS=
+
+automaton="$(
+  mona $MONA_FLAGS -w /dev/stdin <<<"$mona_desc"
+)"
+
+if ! grep -q ANALYSIS <<<"$automaton"; then
+  tail -n1 <<<"$automaton"
+  echo ""
+  echo "MONA failed!"
+  exit 1
+fi
+
+save "$AUTOMATON" <<<"$automaton"
+
 sol=$(
-  ./perms.py <<<"$inp" |
-  save "$MONA" |
-  mona -w /dev/stdin |
-  save "$AUTOMATON" |
-  ./process_automaton.py "$MATRIX"
+  ./process_automaton.py "$MATRIX" <<<"$automaton"
 )
 
 echo "$sol"

@@ -24,9 +24,11 @@ def log(*args, **kwargs):
     print(*args, **kwargs, end="", flush=True)
 
 
-if __name__ == "__main__":
-    test_file = sys.argv[1] if len(sys.argv) >= 2 else f"{DIR}/tests.yaml"
+class TestFailed(Exception):
+  pass
 
+
+def run_test_file(test_file):
     with open(test_file, "r") as f:
         tests = list(yaml.load_all(f, Loader=yaml.SafeLoader))
 
@@ -54,7 +56,7 @@ if __name__ == "__main__":
             ref = SR(t["gen_fun"])
             if (ref - res).simplify_full() != 0:
                 log(f"\nFailed: expected {ref} but got {res}\n")
-                exit(1)
+                raise TestFailed()
             log("ok")
 
         if "first_values" in t:
@@ -65,10 +67,27 @@ if __name__ == "__main__":
                 val = s.coefficient(x, i)
                 if ref_val != val:
                     log(f"\nFailed on value {i}: expected {ref_val} but got {val}\n")
-                    exit(1)
+                    raise TestFailed()
             log("ok")
 
         log("\n")
+
+    return (skipped, mona_failed)
+
+
+if __name__ == "__main__":
+    test_files = sys.argv[1:]
+    if not test_files: test_files = [ f"{DIR}/tests.yaml" ]
+
+    skipped = 0
+    mona_failed = 0
+    try:
+        for f in test_files:
+            s, m = run_test_file(f)
+            skipped += s
+            mona_failed += m
+    except TestFailed:
+        exit(1)
 
     if mona_failed:
         log(f"Mona failed {mona_failed} times.\n")

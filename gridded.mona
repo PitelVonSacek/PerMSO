@@ -89,19 +89,24 @@ pred class_extra({{var_Xs}}) =
   {{ self.hide_internals() }}
   {{ class_extra | indent(2) }};
 
-pred Mon'({{var_Xs}}) =
-  partition({{Xs}}) &
-  # Check that positions are respected inside blocks
-  {% for i in range(C.n) -%}
-    (all1 x, y: (x in X{{i}} & y in X{{i}} & left_of(x, y)) => {##}
+
+{% for i in range(C.n) %}
+pred Mon'_in_block_{{i}}({{var_Xs}}) =
+  {% if i > 0 %}
+    Mon'_in_block_{{i-1}}({{Xs}}) &
+  {% endif %}
+  (all1 x, y: (x in X{{i}} & y in X{{i}} & left_of(x, y)) => {##}
       {%- if C.blocks[i].sign == 1 -%}
         below_of(x, y)
       {%- else -%}
         below_of(y, x)
       {%- endif -%}
-    ) &
-  {% endfor -%}
-  # Check that positions are respected between blocks
+    );
+{% endfor %}
+
+pred Mon'_in_block({{var_Xs}}) = Mon'_in_block_{{C.n - 1}}({{Xs}});
+
+pred Mon'_between_blocks({{var_Xs}}) =
   {% for i in range(C.n) %}{% for j in range(C.n) -%}
     (all1 x, y: (x in X{{i}} & y in X{{j}}) => {##}
       {%- if C.blocks[i].row < C.blocks[j].row -%}
@@ -113,6 +118,11 @@ pred Mon'({{var_Xs}}) =
     true) &
   {% endfor %}{% endfor -%}
   true;
+
+pred Mon'({{var_Xs}}) =
+  partition({{Xs}}) &
+  Mon'_in_block({{Xs}}) &
+  Mon'_between_blocks({{Xs}});
 
 pred bigger_than_A({{var_Xs}}) = ex1 x:
   let2 B0 = empty in

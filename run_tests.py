@@ -25,7 +25,7 @@ class TestFailed(Exception):
   pass
 
 
-def run_test_file(test_file):
+def run_test_file(test_file, skip_basis=False):
     with open(test_file, "r") as f:
         tests = list(yaml.load_all(f, Loader=yaml.SafeLoader))
 
@@ -67,20 +67,51 @@ def run_test_file(test_file):
                     raise TestFailed()
             log("ok")
 
+        if not skip_basis and "basis" in t:
+            log(" basis ")
+            if t.get("skip_basis", False):
+                log("skipped\n")
+                continue
+
+            ref = {
+                tuple(x) if isinstance(x, list) else number_to_perm(x)
+                for x in t["basis"]
+            }
+            try:
+                b = generate_basis(t["class"])
+            except subprocess.CalledProcessError as e:
+                log(f" Mona failed (basis): {e}\n")
+                continue
+
+            if ref != b:
+                log(f"\nFailed: got basis {b} but expected {ref}\n")
+                raise TestFailed()
+            log("ok")
+
         log("\n")
 
     return (skipped, mona_failed)
 
 
+def get(l, i):
+    return l[i] if len(l) > i else None
+
+
 if __name__ == "__main__":
-    test_files = sys.argv[1:]
+    first = 1
+    skip_basis = False
+    if get(sys.argv, 1) == "--skip-basis":
+        skip_basis = True
+        first += 1
+
+    test_files = sys.argv[first:]
     if not test_files: test_files = [ f"{DIR}/tests.yaml" ]
 
     skipped = 0
     mona_failed = 0
     try:
         for f in test_files:
-            s, m = run_test_file(f)
+            s, m = run_test_file(f, skip_basis)
             skipped += s
             mona_failed += m
     except TestFailed:

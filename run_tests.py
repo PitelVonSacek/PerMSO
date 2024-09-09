@@ -71,6 +71,7 @@ def run_test_file(test_file, skip_basis=False):
             log(" basis ")
             if t.get("skip_basis", False):
                 log("skipped\n")
+                skipped += 1
                 continue
 
             ref = {

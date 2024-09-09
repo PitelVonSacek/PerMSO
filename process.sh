@@ -31,8 +31,10 @@ save "$MONA" <<<"$mona_desc"
 
 [[ -n "$MONA_STATS" ]] && MONA_FLAGS=-s || MONA_FLAGS=
 
+: ${MONA_CMD:=mona}
+
 automaton="$(
-  mona $MONA_FLAGS -w /dev/stdin <<<"$mona_desc"
+  $MONA_CMD $MONA_FLAGS -w /dev/stdin <<<"$mona_desc"
 )"
 
 if ! grep -q ANALYSIS <<<"$automaton"; then

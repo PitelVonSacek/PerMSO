@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from common import run_mona
 from io import StringIO
 import re
 import os
@@ -9,15 +10,11 @@ import yaml
 
 from sage.all import *
 
+from generate_basis import generate_basis, number_to_perm
 from perms import gen_mona
 from process_automaton import parse_automaton, automaton_to_generating_function as a2gf
 
 DIR = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/")
-
-
-def run_mona(mona_desc):
-    return subprocess.check_output([ "mona", "-w", "/dev/stdin" ],
-        encoding="utf-8", input=mona_desc, shell=False)
 
 
 def log(*args, **kwargs):

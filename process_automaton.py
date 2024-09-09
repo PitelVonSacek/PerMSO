@@ -1,16 +1,9 @@
 #!/usr/bin/env python
 
+from common import read_up_to
 import re
 import sys
 from sage.all import *
-
-
-def read_up_to(inp, expr):
-    for line in inp:
-        m = re.fullmatch(expr, line.strip())
-        if m: return m
-
-    raise Exception("Failed to match expr")
 
 
 def parse_automaton(inp):

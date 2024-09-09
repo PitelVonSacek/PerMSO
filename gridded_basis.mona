@@ -1,0 +1,21 @@
+{% extends "gridded.mona" %}
+
+{% block class_extra %}
+NOT IMPLEMENTED
+{% endblock %}
+
+{% block is_valid %}
+(ex1 x: A{{single}} = { x }) &
+partition({{As}}) &
+~(ex2 {{Xs}}:
+  X{{single}} = empty &
+  partition({{Xs}}) &
+  Mon'({{Xs}})
+) &
+(all1 x: ex2 {{Xs}}: 
+  partition({{Xs}}) &
+  X{{single}} = { x } &
+  let2 X{{single}} = empty in Mon'_unpart({{Xs}})
+) &
+{% endblock %}
+

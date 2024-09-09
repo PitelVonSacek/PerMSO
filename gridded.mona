@@ -119,10 +119,13 @@ pred Mon'_between_blocks({{var_Xs}}) =
   {% endfor %}{% endfor -%}
   true;
 
-pred Mon'({{var_Xs}}) =
-  partition({{Xs}}) &
+pred Mon'_unpart({{var_Xs}}) =
   Mon'_in_block({{Xs}}) &
   Mon'_between_blocks({{Xs}});
+
+pred Mon'({{var_Xs}}) =
+  partition({{Xs}}) &
+  Mon'_unpart({{Xs}});
 
 pred bigger_than_A({{var_Xs}}) = ex1 x:
   let2 B0 = empty in

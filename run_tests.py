@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
+from argparse import ArgumentParser
 from common import run_mona
 from io import StringIO
 import re
 import os
 import subprocess
-import sys
 import yaml
 
 from sage.all import *
@@ -17,15 +17,24 @@ from process_automaton import parse_automaton, automaton_to_generating_function 
 DIR = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/")
 
 
+def diff_sets(old, new):
+    ret = [
+      f"- {x}\n" for x in old if x not in new
+    ] + [
+      f"+ {x}\n" for x in new if x not in old
+    ]
+    return "".join(ret)
+
+
 def log(*args, **kwargs):
     print(*args, **kwargs, end="", flush=True)
 
 
 class TestFailed(Exception):
-  pass
+    pass
 
 
-def run_test_file(test_file, skip_basis=False):
+def run_test_file(test_file, skip_basis="auto", skip_expr=lambda x: False):
     with open(test_file, "r") as f:
         tests = list(yaml.load_all(f, Loader=yaml.SafeLoader))
 
@@ -34,8 +43,8 @@ def run_test_file(test_file, skip_basis=False):
     for t in tests:
         log(f"{t['name']}:")
         mona = gen_mona(t)
-        if t.get("skip", False):
-            log(f" Skipping ({t['skip']})\n")
+        if skip_expr(t):
+            log(f" Skipping ({t.get('skip', 'skip expr')})\n")
             skipped += 1
             continue
 
@@ -67,9 +76,9 @@ def run_test_file(test_file, skip_basis=False):
                     raise TestFailed()
             log("ok")
 
-        if not skip_basis and "basis" in t:
+        if skip_basis != "on" and "basis" in t:
             log(" basis ")
-            if t.get("skip_basis", False):
+            if t.get("skip_basis", False) and skip_basis != "off":
                 log("skipped\n")
                 skipped += 1
                 continue
@@ -86,6 +95,7 @@ def run_test_file(test_file, skip_basis=False):
 
             if ref != b:
                 log(f"\nFailed: got basis {b} but expected {ref}\n")
+                log(f"diff ref got\n{diff_sets(ref, b)}")
                 raise TestFailed()
             log("ok")
 
@@ -94,25 +104,33 @@ def run_test_file(test_file, skip_basis=False):
     return (skipped, mona_failed)
 
 
-def get(l, i):
-    return l[i] if len(l) > i else None
-
-
 if __name__ == "__main__":
-    first = 1
-    skip_basis = False
-    if get(sys.argv, 1) == "--skip-basis":
-        skip_basis = True
-        first += 1
+    parser = ArgumentParser(prog="Run tests")
+    parser.add_argument("file", nargs="*", default=[ f"{DIR}/tests.yaml" ])
+    parser.add_argument("-b", "--skip-basis", choices=["auto", "on", "off"])
+    parser.add_argument("-e", "--skip-expr", action="store",
+        default="t.get('skip', False)")
+    parser.add_argument("-f", "--start-from")
+    args = parser.parse_args()
 
-    test_files = sys.argv[first:]
-    if not test_files: test_files = [ f"{DIR}/tests.yaml" ]
+    skip_expr = eval("lambda t: " + args.skip_expr)
+    if args.start_from is not None:
+        seen = False
+        def start_from(t):
+            global seen
+            if re.fullmatch(args.start_from, t['name']):
+                seen = True
+            return not seen
+    else:
+        def start_from(t): return False
+
+    real_skip_expr = lambda t: start_from(t) or skip_expr(t)
 
     skipped = 0
     mona_failed = 0
     try:
-        for f in test_files:
-            s, m = run_test_file(f, skip_basis)
+        for f in args.file:
+            s, m = run_test_file(f, args.skip_basis, real_skip_expr)
             skipped += s
             mona_failed += m
     except TestFailed:

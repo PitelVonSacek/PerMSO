@@ -2,6 +2,7 @@ from os import environ
 import re
 import subprocess
 from sys import argv
+import yaml
 
 
 def try_log(logfile, fun):
@@ -35,4 +36,14 @@ def read_up_to(inp, expr):
         if m: return m
 
     raise Exception("Failed to match expr")
+
+
+class ClassNotFound(Exception): pass
+
+def get_class(filename, name):
+    with open(filename, "r") as f:
+        for t in yaml.load_all(f, Loader=yaml.SafeLoader):
+            if name == t.get("name", None):
+                return t
+    raise ClassNotFound(f"Class '{name}' in file '{filename}'")
 

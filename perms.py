@@ -83,7 +83,7 @@ class GridGeomClass:
         return rs, cs
 
 
-def gen_mona(desc):
+def gen_mona(desc, check_is_contained=None):
     TYPES = {
         "geom_grid": (GridGeomClass, "gridded"),
         "insertion_enc": (lambda x: x, "insertion_enc"),
@@ -117,6 +117,7 @@ def gen_mona(desc):
 
     constructor, templ = TYPES[desc["type"]]
     desc |= {
+        "check_is_contained": check_is_contained,
         "C": constructor(desc["class"]),
         "version": VERSION
     }

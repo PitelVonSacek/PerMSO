@@ -51,7 +51,11 @@ pred extra() =
   {% block hide_internals required %}{% endblock %}
   {{ extra | indent(2) }};
 
+{% if check_is_contained %}
+var1 {{ match_vars(check_is_contained) }};
 
+({{ match(check_is_contained) }}) &
+{% endif %}
 {% block is_valid required %}{% endblock -%}
 avoid() &
 extra() &

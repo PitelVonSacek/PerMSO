@@ -18,10 +18,10 @@ m2l-str;
 {% block orderings required %}{% endblock %}
 
 
-{%- from "macros.mona" import match %}
+{%- from "macros.mona" import match, match_vars %}
 pred avoid() =
   {% for pat in avoid -%}
-    ~{{ match(pat) }} &
+    ~(ex1 {{ match_vars(pat) }}: {{ match(pat) }}) &
   {% endfor -%}
   true;
 

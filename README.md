@@ -110,3 +110,34 @@ Extra keys supported in test files:
 - `skip_basis`: Boolean, it true, skip basis calculation for this class
   even thought `basis` key is present.
 
+All the following examples encode the same class. Note that basis
+generation is limited to geometric grid classes without any extra
+conditions for now.
+
+```yaml
+name: inc inc
+type: geom_grid # may be ommitted
+class: [[ 1, 1 ]]
+gen_fun: -(2x^3 - 2x^2 + x)/(2x^3 - 5x^2 + 4x - 1)
+first_values: [0, 1, 2, 5, 12, 27, 58, 121, 248, 503]
+basis: [ 321, 2143, 3142 ]
+---
+
+name: inc inc (alt)
+type: geom_grid # may be ommitted
+class: [[ 1, 1, 1 ]]
+avoid: [ 321, 2143, 3142 ]
+gen_fun: -(2x^3 - 2x^2 + x)/(2x^3 - 5x^2 + 4x - 1)
+first_values: [0, 1, 2, 5, 12, 27, 58, 121, 248, 503]
+# basis: [ 321, 2143, 3142 ] # we cannot generate basis for class with extra conditions for now
+---
+
+name: inc inc (alt 2)
+type: insertion_enc
+class: 2
+avoid: [ 321, 2143, 3142 ]
+gen_fun: -(2x^3 - 2x^2 + x)/(2x^3 - 5x^2 + 4x - 1)
+first_values: [0, 1, 2, 5, 12, 27, 58, 121, 248, 503]
+# basis: [ 321, 2143, 3142 ] # we cannot generate basis for insertion encoding for now
+```
+

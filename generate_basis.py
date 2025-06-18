@@ -2,7 +2,7 @@
 
 from common import run_mona, read_up_to
 from io import StringIO
-from perms import GridGeomClass, jinja_env
+from perms import GridGeomClass, jinja_env, number_to_perm
 import re
 import sys
 from sage.all import *
@@ -97,15 +97,6 @@ def generate_basis(cls):
             basis.add(p)
 
     return basis
-
-
-def number_to_perm(x):
-    l = []
-    while x:
-        l.append(x % 10)
-        x //= 10
-
-    return tuple(reversed(l))
 
 
 if __name__ == "__main__":

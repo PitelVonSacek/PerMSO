@@ -83,6 +83,17 @@ class GridGeomClass:
         return rs, cs
 
 
+def number_to_perm(x):
+    if isinstance(x, list): return x
+
+    l = []
+    while x:
+        l.append(x % 10)
+        x //= 10
+
+    return tuple(reversed(l))
+
+
 def gen_mona(desc, check_is_contained=None):
     TYPES = {
         "geom_grid": (GridGeomClass, "gridded"),
@@ -114,6 +125,8 @@ def gen_mona(desc, check_is_contained=None):
     for k, v in KNOWN_KEYS.items():
         if k not in desc:
             desc[k] = v
+
+    desc["avoid"] = [ number_to_perm(x) for x in desc["avoid"] ]
 
     constructor, templ = TYPES[desc["type"]]
     desc |= {

@@ -21,7 +21,9 @@ function of the number of accepted strings of length `k`.
 Currently we support acyclic grid classes and insertion encoding plus we can
 restrict the class by any condition expressed in WS1S. We have prepared conditions
 for sum-/skew-indecomposable, simple permutations, and avoidance of specified
-permutations.
+permutations. The WS1S formula used for geometric grid classes is based on
+"Decidability in geometric grid classes of permutations" by Samuel Braunfeld
+[](https://arxiv.org/abs/2308.04201v2).
 
 
 ## Tools
@@ -33,7 +35,8 @@ permutations.
   input.
 
 - `generate_basis.py`: Calculates the basis of given class. It currently
-  supports only geometric grid classes without any extra conditions.
+  supports only geometric grid classes without any extra conditions
+  given as a matrix with 1, -1 and 0 entries.
 
 - `get_class.py`: Takes yaml filename and optionally a name of class in the
   file and prints the description of corresponding class. Prints the first
@@ -96,7 +99,7 @@ A permutation class is described as `yaml` object with keys:
 - `class_extra`: Like `extra` but it might use the class specific
   representation.
 
-Extra keys supported in test files:
+Extra keys supported in test files (and ignored by other tools):
 
 - `name`: Name of the class.
 - `gen_fun`: The generating function.

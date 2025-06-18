@@ -144,3 +144,8 @@ first_values: [0, 1, 2, 5, 12, 27, 58, 121, 248, 503]
 # basis: [ 321, 2143, 3142 ] # we cannot generate basis for insertion encoding for now
 ```
 
+
+## License
+
+All code in this repository is licensed under GPL version 2.
+

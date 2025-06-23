@@ -34,9 +34,9 @@ permutations. The WS1S formula used for geometric grid classes is based on
   of the class in the file) or by yaml description read from standard
   input.
 
-- `generate_basis.py`: Calculates the basis of given class. It currently
-  supports only geometric grid classes without any extra conditions
-  given as a matrix with 1, -1 and 0 entries.
+- `generate_basis.py`: Calculates the basis of given class. The class
+  is read as yaml from standard input. It currently supports only geometric
+  grid classes without any extra conditions.
 
 - `get_class.py`: Takes yaml filename and optionally a name of class in the
   file and prints the description of corresponding class. Prints the first
@@ -143,6 +143,29 @@ gen_fun: -(2x^3 - 2x^2 + x)/(2x^3 - 5x^2 + 4x - 1)
 first_values: [0, 1, 2, 5, 12, 27, 58, 121, 248, 503]
 # basis: [ 321, 2143, 3142 ] # we cannot generate basis for insertion encoding for now
 ```
+
+For example you can enumerate permutations of length up to 40 from `inc inc` class
+stored in `tests.yaml` file using
+
+```bash
+./get_class.py tests.yaml "inc inc" | EXPAND=40 ./process.sh
+```
+
+and generate its basis by
+
+```bash
+./get_class.py tests.yaml "inc inc" | ./generate_basis.py
+```
+
+You can also store the generated MONA files into `mona.inp` and outputted
+automatons into `mona.out` while running MONA on machine named `foobar`
+
+```bash
+./get_class.py tests.yaml "inc inc" | MONA_CMD="ssh foobar ./mona" MONA_IN_LOG=mona.inp MONA_OUT_LOG=mona.out ./generate_basis.py
+```
+
+Note that basis generation would fail for `inc inc (alt)` because extra conditions
+and insertion encoding is not supported for basis generation yet.
 
 
 ## License

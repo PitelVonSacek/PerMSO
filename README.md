@@ -22,8 +22,24 @@ Currently we support acyclic grid classes and insertion encoding plus we can
 restrict the class by any condition expressed in WS1S. We have prepared conditions
 for sum-/skew-indecomposable, simple permutations, and avoidance of specified
 permutations. The WS1S formula used for geometric grid classes is based on
-"Decidability in geometric grid classes of permutations" by Samuel Braunfeld
-[](https://arxiv.org/abs/2308.04201v2).
+["Decidability in geometric grid classes of permutations"](https://arxiv.org/abs/2308.04201v2)
+by Samuel Braunfeld.
+
+
+## Installation
+
+All code in this repo is Python or Bash so there is no installation required
+but the scripts have two notable requirements apart from Python 3 and Bash.
+These are MONA and SageMath:
+
+- MONA can be obtained at <https://www.brics.dk/mona/download.html>. All
+  scripts expect existence of `mona` command in standard path. If this is
+  not the case, set environment variable `MONA_CMD` to path to MONA executable.
+
+- SageMath can be installed via package manager (in the case of most Linux
+  distributions) or downloaded at <https://www.sagemath.org/>. The scripts
+  require `sage` module to be importable. If this is not the case,
+  running them with `sage --python ./name_of_script.py` might help.
 
 
 ## Tools

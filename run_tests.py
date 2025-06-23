@@ -88,7 +88,7 @@ def run_test_file(test_file, skip_basis="auto", skip_expr=lambda x: False):
                 for x in t["basis"]
             }
             try:
-                b = generate_basis(t["class"])
+                b = generate_basis(t)
             except subprocess.CalledProcessError as e:
                 log(f" Mona failed (basis): {e}\n")
                 continue

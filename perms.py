@@ -94,39 +94,49 @@ def number_to_perm(x):
     return tuple(reversed(l))
 
 
-def gen_mona(desc, check_is_contained=None):
-    TYPES = {
-        "geom_grid": (GridGeomClass, "gridded"),
-        "insertion_enc": (lambda x: x, "insertion_enc"),
-    }
+TYPES = {
+    "geom_grid": (GridGeomClass, "gridded"),
+    "insertion_enc": (lambda x: x, "insertion_enc"),
+}
 
-    KNOWN_KEYS = {
-        "type": "geom_grid",
-        "class": None,
-        "gridded": False,
-        "avoid": [],
-        "sum_indecomposable": False,
-        "skew_indecomposable": False,
-        "simple": False,
-        "extra": "true",
-        "class_extra": "true",
-    }
 
-    IGNORED_KEYS = {
-      "name", "gen_fun", "first_values", "skip", "basis", "skip_basis",
-    }
+KNOWN_KEYS = {
+    "type": "geom_grid",
+    "class": None,
+    "gridded": False,
+    "avoid": [],
+    "sum_indecomposable": False,
+    "skew_indecomposable": False,
+    "simple": False,
+    "extra": "true",
+    "class_extra": "true",
+}
 
+
+IGNORED_KEYS = {
+  "name", "gen_fun", "first_values", "skip", "basis", "skip_basis",
+}
+
+
+def ensure_known_keys(desc, warn_on_unknown=True):
     desc = dict(desc)
 
-    for k in desc.keys():
-        if k not in KNOWN_KEYS and k not in IGNORED_KEYS:
-            print(f"WARNING: unknown key '{k}'", file=sys.stderr)
+    if warn_on_unknown:
+        for k in desc.keys():
+            if k not in KNOWN_KEYS and k not in IGNORED_KEYS:
+                print(f"WARNING: unknown key '{k}'", file=sys.stderr)
 
     for k, v in KNOWN_KEYS.items():
         if k not in desc:
             desc[k] = v
 
     desc["avoid"] = [ number_to_perm(x) for x in desc["avoid"] ]
+
+    return desc
+
+
+def gen_mona(desc, check_is_contained=None):
+    desc = ensure_known_keys(desc, True)
 
     constructor, templ = TYPES[desc["type"]]
     desc |= {

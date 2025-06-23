@@ -2,7 +2,7 @@
 
 from common import run_mona, read_up_to
 from io import StringIO
-from perms import GridGeomClass, jinja_env, number_to_perm
+from perms import GridGeomClass, jinja_env, number_to_perm, ensure_known_keys, KNOWN_KEYS
 import re
 import sys
 from sage.all import *
@@ -91,6 +91,15 @@ def extend_single_row(cls, i):
 
 
 def generate_basis(cls):
+    cls = ensure_known_keys(cls)
+
+    assert cls["type"] == "geom_grid", "Basis generation is supported only for geom. grid classes"
+    for k, v in cls.items():
+        if k in [ "type", "class" ] or k not in KNOWN_KEYS: continue
+        assert v == KNOWN_KEYS[k], "Extra conditions are not supported for basis generation"
+
+    cls = cls["class"]
+
     basis = set()
     for i in range(len(cls)):
         for p in extend_single_row(cls, i):
